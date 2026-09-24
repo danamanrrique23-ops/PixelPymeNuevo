@@ -1,0 +1,431 @@
+
+---
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión</title>
+  </head>
+
+  <body>
+    <main class="login-container">
+      <div class="login-card">
+        <div class="icon">🔧</div>
+
+        <h1>Bienvenido</h1>
+        <p class="subtitle">Inicia sesión en PixelPyme</p>
+
+        <form id="loginForm">
+          <div class="input-group">
+            <label for="email">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Ingresa tu correo"
+               autocomplete="off"
+              required
+            />
+          </div>
+
+        <div class="input-group">
+  <label for="password">Contraseña</label>
+
+  <div class="password-container">
+    <input
+      type="password"
+      id="password"
+      placeholder="Ingresa tu contraseña"
+       autocomplete="new-password"
+      required
+    />
+
+    <button
+      type="button"
+      id="mostrarPassword"
+      class="password-toggle"
+      aria-label="Mostrar contraseña"
+    >
+      👁️
+    </button>
+  </div>
+</div>
+
+          <button type="submit">Iniciar sesión</button>
+
+          <button
+  type="button"
+  class="google-btn"
+  onclick="window.location.href='http://127.0.0.1:8001/api/auth/google'"
+>
+  <span class="google-icon">G</span>
+  <span>Continuar con Google</span>
+</button>
+       
+
+          <div class="registro-link">
+            <span>¿No tienes una cuenta?</span>
+            <a href="/registro">Regístrate aquí</a>
+          </div>
+
+          <p id="mensaje"></p>
+        </form>
+      </div>
+    </main>
+
+    <script>
+      const formulario =
+        document.getElementById("loginForm") as HTMLFormElement;
+
+      const mensaje =
+        document.getElementById("mensaje") as HTMLParagraphElement;
+
+        const passwordInput= 
+        document.getElementById("password") as HTMLInputElement;
+
+        const mostrarpassword = 
+        document.getElementById("mostrarPassword") as HTMLButtonElement;
+
+         mostrarpassword.addEventListener("click", () => {
+          if (passwordInput.type === "password"){
+            passwordInput.type = "text"
+          } else {
+            passwordInput.type="password"
+          }
+        });
+      
+
+      formulario.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const email =
+          (document.getElementById("email") as HTMLInputElement).value;
+
+        const password =
+          (document.getElementById("password") as HTMLInputElement).value;
+
+        console.log("Email:", email);
+        console.log("Password:", password);
+
+    
+
+        try {
+          const respuesta = await fetch(
+            "http://localhost:8001/api/login",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                email: email,
+                password: password
+              })
+            }
+          );
+
+          console.log("STATUS:", respuesta.status);
+
+          const datos = await respuesta.json();
+
+          console.log("DATOS:", datos);
+          console.log("ROL:", datos.rol);
+          console.log("USUARIO RECIBIDO:", datos.usuario);
+          console.log("ID RECIBIDO:", datos.usuario?.id);
+
+          if (respuesta.ok) {
+
+            // Mensaje de éxito
+            mensaje.textContent =
+              "Inicio de sesión exitoso ✅";
+
+            mensaje.className = "exito";
+
+            // Guardar token
+            localStorage.setItem(
+              "token",
+              datos.token
+            );
+
+            // Guardar ID del usuario
+            if (datos.usuario?.id !== undefined) {
+
+              localStorage.setItem(
+                "usuario_id",
+                String(datos.usuario.id)
+              );
+
+              console.log(
+                "ID guardado:",
+                datos.usuario.id
+              );
+
+            } else {
+
+              console.error(
+                "El backend no está enviando el ID del usuario"
+              );
+            }
+
+            // Guardar nombre completo
+            if (datos.usuario) {
+
+              localStorage.setItem(
+                "usuario_nombre",
+                `${datos.usuario.nombre} ${datos.usuario.apellido}`
+              );
+
+              console.log(
+                "Nombre guardado:",
+                datos.usuario.nombre,
+                datos.usuario.apellido
+              );
+            }
+
+            if (datos.rol === "Administrador") {
+
+  setTimeout(() => {
+    window.location.href = "/admin";
+  }, 1500);
+
+} else if (datos.rol === "Usuario") {
+
+  setTimeout(() => {
+    window.location.href = "/usuario";
+  }, 1500);
+
+} else {
+
+  mensaje.textContent = "Rol no reconocido";
+  mensaje.className = "error";
+}
+
+    
+         
+
+          } else {
+
+            // Error de login
+            mensaje.textContent =
+              datos.Message ||
+              datos.mensaje ||
+              "Correo o contraseña incorrectos";
+
+            mensaje.className = "error";
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Error al conectar con el servidor:",
+            error
+          );
+
+          mensaje.textContent =
+            "No se pudo conectar con el servidor";
+
+          mensaje.className = "error";
+        }
+      });
+    </script>
+
+
+  </body>
+</html>
+
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #021670, #052170, #132556);
+  }
+ 
+h1 {
+    position: absolute;
+    top: 20px;
+    color: rgba(18, 4, 4, 0.895);
+    font-size: 70px;
+    font-weight: bold;
+    margin-left: 45px;
+  }
+
+  .subtitle {
+    font-size: 34px;
+    color: #000000;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 900;
+  }
+
+  .icon {
+    font-size: 80px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .login-container {
+    width: 45%;
+    max-width: 630px;
+    background: white;
+    padding: 60px;
+    border-radius: 30px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-bottom: 8px;
+    color: #0b0a0a;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    border: 2px solid #4a5a7a;
+    border-radius: 10px;
+    outline: none;
+    background: #f9fafb;
+    font-size: 15px;
+    transition: 0.3s;
+  }
+
+  input:focus {
+    border-color: 135deg, #061A2E, #0B2D4D, #164E73;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(#021670);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(44, 73, 206, 0.943);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  .registro-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+  }
+
+  .registro-link a {
+    color: #021670;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 5px;
+  }
+
+  .registro-link a:hover {
+    text-decoration: underline;
+  }
+
+  #mensaje {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+
+  .exito {
+    color: green;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .google-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  border: 1px solid #dadce0;
+  border-radius: 10px;
+  background: white;
+  color: #3c4043;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  transition: 0.2s;
+}
+
+.google-btn:hover {
+  background: #f8f9fa;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transform: none;
+}
+
+.google-icon {
+  font-size: 2sspx;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  color: #4285f4;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  padding-right: 50px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 30%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+
+  padding: 0;
+  margin: 0;
+
+  background: transparent;
+  color: #333;
+  border: none;
+  box-shadow: none;
+
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  transform: translateY(-50%);
+  background: transparent;
+  box-shadow: none;
+}
+</style>
+

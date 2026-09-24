@@ -1,0 +1,173 @@
+---
+
+import "../styles/index.css";
+
+interface Producto {
+    id_producto: number;
+    nombre: string;
+    descripcion: string;
+    marca: string;
+    caracteristicas: string;
+    imagen: string;
+    cantidad: number;
+    estado: "disponible" | "reservado" | "vendido";
+    nombre_categoria: string;
+}
+
+const productos : Producto [] = [
+ { id_producto: 1, nombre: "Sala", descripcion: "Sala en L , 3 sofas", marca: "Muebles JR", caracteristicas: "Tela antirrasguños , color azul oscuro", imagen: "/img/sala.jpeg", cantidad: 2, estado: "disponible", nombre_categoria: "Muebles" },
+  { id_producto: 2, nombre: "Comedor", descripcion: "Comedor de 6 puestos en cedro", marca: "Maderas del Norte", caracteristicas: "Madera de cedro, color  caramelo , tapizado de las sillas en cuerotex", imagen: "/img/comedor.jpg", cantidad: 1, estado: "disponible", nombre_categoria: "Muebles" },
+  { id_producto: 3, nombre: "Nevera", descripcion: "Nevera no frost 400L", marca: "LG", caracteristicas: "Dispensador de agua , 2 puertas, color gris , marca LG", imagen: "/img/nevera.jpg", cantidad: 1, estado: "reservado", nombre_categoria: "Electrodomésticos" },
+  { id_producto: 4, nombre: "Estufa", descripcion: "Estufa a gas 4 puestos", marca: "Haceb", caracteristicas: "Encendido eléctrico, color negra, con horno y gratinador, con vidrio templado ", imagen: "/img/estufa.jpg", cantidad: 3, estado: "disponible", nombre_categoria: "Electrodomésticos" },
+  { id_producto: 5, nombre: "Ropero", descripcion: "Ropero 3 puertas con espejo", marca: "Muebles JR", caracteristicas: "Incluye espejo, viene dividido en 3 sectores, color blanco, espejo con luces alrededor", imagen: "/img/ropero.jpg", cantidad: 0, estado: "vendido", nombre_categoria: "Muebles" },
+  { id_producto: 6, nombre: "Lavadora", descripcion: "Lavadora 18kg carga superior", marca: "Whirlpool", caracteristicas: "automatica , color gris, de 40 libras, con una garantia de 1 año ", imagen: "/img/lavadora.jpg", cantidad: 2, estado: "disponible", nombre_categoria: "Electrodomésticos" },
+  { id_producto: 7, nombre: "Licuadora", descripcion: "Licuadora de vaso de vidrio, 3 velocidades", marca: "Oster", caracteristicas: "Vaso de vidrio 1.5L", imagen: "/img/licuadora.jpg", cantidad: 5, estado: "disponible", nombre_categoria: "Utensilios de cocina" },
+  { id_producto: 8, nombre: "Sanduchera", descripcion: "Sanduchera antiadherente 2 puestos", marca: "Oster", caracteristicas: "Placas antiadherentes", imagen: "/img/sanduchera.jpg", cantidad: 4, estado: "disponible", nombre_categoria: "Utensilios de cocina" },
+  { id_producto: 9, nombre: "Olla exprés", descripcion: "Olla a presión 7 litros", marca: "Imusa", caracteristicas: "Capacidad 7L", imagen: "/img/olla-expres.jpg", cantidad: 3, estado: "disponible", nombre_categoria: "Utensilios de cocina" },
+];
+
+const numeroWhatsapp = "573148008013"; 
+
+const etiquetaEstado: Record<Producto["estado"], string> = {
+    disponible: "Disponible",
+    reservado: "Reservado",
+    vendido: "Vendido"
+};
+
+function normalizar(texto: string): string {
+  return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+---
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Triunfo Mer — Muebles y Electrodomésticos</title>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 11.5 12 4l9 7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5.5 9.5V20h13V9.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="brand-text">
+                <span class="brand-name">Triunfo Mer</span>
+                <span class="brand-sub">Muebles y Electrodomésticos</span>
+            </div>
+        </div>
+        <nav class="topnav">
+            <a href="/">Inicio</a>
+            <a href="/catalogo">Catálogo</a>
+            <a href="/inicioSeccion">Mi cuenta</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-copy">
+            <h1>Tu hogar,<br/>nuestro mejor proyecto</h1>
+            <p>Muebles y Electrodomésticos para cada espacio de tu vida.</p>
+            <a class="btn-hero" href="#catalogo">Ver catálogo</a>
+        </div>
+    </section>
+
+    <main id="catalogo" class="catalogo">
+        <div class="catalogo-header">
+            <h2>Catálogo de Productos</h2>
+            <p>Consulta la foto, la descripción y la disponibilidad de cada producto. No mostramos precios aquí — para eso, escríbenos por WhatsApp.</p>
+        </div>
+
+        <div class="controles">
+            <div class="buscador">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="m21 21-4.3-4.3" stroke-linecap="round"/>
+                </svg>
+                <input type="text" id="buscador-input" placeholder="Buscar productos..." aria-label="Buscar productos"/>
+            </div>
+
+            <div class="filtros" role="tablist" aria-label="Filtrar por categoría">
+                <button class="filtro activo" data-filtro="todos" role="tab" aria-selected="true">Todos</button>
+                <button class="filtro" data-filtro="muebles" role="tab" aria-selected="false">Muebles</button>
+                <button class="filtro" data-filtro="electrodomesticos" role="tab" aria-selected="false">Electrodomésticos</button>
+                <button class="filtro" data-filtro="utensiliosdecocina" role="tab" aria-selected="false">Utensilios de cocina</button>
+            </div>
+        </div>
+     
+        <div class="grid" id="grid-productos">
+            {productos.map((p) => (
+                <article
+                    class="tarjeta"
+                    data-nombre={p.nombre.toLowerCase()}
+                    data-categoria={normalizar(p.nombre_categoria).replace(/\s+/g, "")}
+                >
+                    <div class="tarjeta-imagen">
+                        <img src={p.imagen} alt={p.nombre} loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('sin-imagen')"/>
+                    </div>
+                    <div class="tarjeta-cuerpo">
+                        <h3>{p.nombre}</h3>
+                        <p class="tarjeta-descripcion">{p.descripcion}</p>
+                        <span class={`estado estado-${p.estado}`}>
+                            {etiquetaEstado[p.estado]}
+                        </span>
+                    </div>
+                </article>
+            ))}
+        </div>
+
+        <p id="sin-resultados" class="sin-resultados" hidden>No encontramos productos con ese nombre.</p>
+    </main>
+     
+    <a
+        class="whatsapp-flotante"
+        href={`https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent("Hola, quiero más información sobre un producto de Triunfo Mer")}`}
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.79.47 3.47 1.29 4.93L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.02c-.25.7-1.25 1.29-2.05 1.46-.55.12-1.26.21-3.68-.79-3.08-1.27-5.06-4.38-5.21-4.58-.15-.2-1.25-1.66-1.25-3.17 0-1.5.78-2.24 1.06-2.55.28-.3.6-.38.8-.38h.58c.18 0 .43-.03.66.5.25.6.86 2.07.93 2.22.08.15.13.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.39-.45.52-.15.15-.3.31-.13.6.18.3.79 1.3 1.7 2.1 1.16 1.04 2.14 1.36 2.44 1.51.3.15.47.13.65-.08.18-.2.76-.88.96-1.18.2-.3.4-.25.66-.15.28.1 1.76.83 2.06.98.3.15.5.22.57.35.08.13.08.72-.17 1.42z"/>
+        </svg>
+        <span>Quiero comprarlo</span>
+    </a>
+
+    <script>
+        const inputBuscar = document.getElementById("buscador-input") as HTMLInputElement;
+        const botonesFiltro = document.querySelectorAll<HTMLButtonElement>(".filtro");
+        const tarjetas = document.querySelectorAll<HTMLElement>(".tarjeta");
+        const sinResultados = document.getElementById("sin-resultados") as HTMLElement;
+
+        let filtroActivo = "todos";
+
+        function aplicarFiltros() {
+            const texto = inputBuscar.value.trim().toLowerCase();
+            let visible = 0;
+
+            tarjetas.forEach((tarjeta) => {
+                const coincideCategoria = filtroActivo === "todos" || tarjeta.dataset.categoria === filtroActivo;
+                const coincideTexto = tarjeta.dataset.nombre?.includes(texto);
+                const mostrar = Boolean(coincideCategoria && coincideTexto);
+                tarjeta.hidden = !mostrar;
+                if (mostrar) visible++; 
+            });
+            sinResultados.hidden = visible !== 0;
+        }
+
+        inputBuscar.addEventListener("input", aplicarFiltros);
+
+        botonesFiltro.forEach((boton) => {
+            boton.addEventListener("click", () => {
+                botonesFiltro.forEach((b) => {
+                    b.classList.remove("activo");
+                    b.setAttribute("aria-selected", "false");
+                });
+                boton.classList.add("activo");
+                boton.setAttribute("aria-selected", "true");
+                filtroActivo = boton.dataset.filtro ?? "todos";
+                aplicarFiltros();
+            });
+        });
+    </script>
+</body>
+</html>

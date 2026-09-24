@@ -1,0 +1,179 @@
+/* ======================================================================
+   ESTILOS GLOBALES - TRIUNFO MER
+   ====================================================================== */
+
+:root {
+  --marino: #2a2860;
+  --marino-oscuro: #201e4a;
+  --tinta: #1c1b33;
+  --hueso: #f6f5f2;
+  --linea: #e7e5e0;
+  --verde: #1f9d55;
+  --verde-fondo: #e6f7ec;
+  --ambar: #b9791f;
+  --ambar-fondo: #fbf0dc;
+  --rojo: #c23b3b;
+  --rojo-fondo: #fbe8e8;
+  --fuente-titulo: "Fraunces", Georgia, serif;
+  --fuente-texto: "Work Sans", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--fuente-texto);
+  color: var(--tinta);
+  background: var(--hueso);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 2rem;
+  background: #fff;
+  border-bottom: 1px solid var(--linea);
+}
+
+.brand { display: flex; align-items: center; gap: 0.65rem; }
+.brand-icon { width: 28px; height: 28px; color: var(--marino); flex-shrink: 0; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+.brand-name { font-family: var(--fuente-titulo); font-weight: 600; font-size: 1.15rem; color: var(--marino); }
+.brand-sub { font-size: 0.72rem; color: #6b6980; }
+
+.topnav { display: flex; gap: 1.75rem; }
+.topnav a { color: var(--tinta); text-decoration: none; font-size: 0.95rem; }
+.topnav a:hover { color: var(--marino); }
+
+.hero {
+  background: linear-gradient(135deg, var(--marino) 0%, var(--marino-oscuro) 100%);
+  color: #fff;
+  padding: 3.5rem 2rem;
+}
+.hero-copy { max-width: 34ch; }
+.hero h1 {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1.15;
+  margin: 0 0 0.85rem;
+  font-weight: 600;
+}
+.hero p { margin: 0 0 1.5rem; color: #cfcdea; font-size: 1.02rem; }
+.btn-hero {
+  display: inline-block;
+  background: #fff;
+  color: var(--marino);
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.btn-hero:hover { background: #ececfa; }
+
+.catalogo { max-width: 1080px; margin: 0 auto; padding: 2.5rem 2rem 6rem; }
+.catalogo-header h2 { font-family: var(--fuente-titulo); font-size: 1.5rem; margin: 0 0 0.4rem; }
+.catalogo-header p { margin: 0 0 1.75rem; color: #57556c; max-width: 62ch; }
+
+.controles { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: center; margin-bottom: 1.75rem; }
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1px solid var(--linea);
+  border-radius: 9px;
+  padding: 0.55rem 0.9rem;
+  flex: 1 1 260px;
+}
+.buscador svg { width: 18px; height: 18px; color: #9390a8; flex-shrink: 0; }
+.buscador input { border: none; outline: none; font-size: 0.95rem; width: 100%; font-family: var(--fuente-texto); }
+
+.filtros { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.filtro {
+  border: 1px solid var(--linea);
+  background: #fff;
+  color: var(--tinta);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--fuente-texto);
+}
+.filtro.activo { background: var(--marino); border-color: var(--marino); color: #fff; }
+.filtro:hover:not(.activo) { border-color: var(--marino); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.25rem;
+}
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.tarjeta-imagen { aspect-ratio: 4 / 3; background: #edecf5; position: relative; }
+.tarjeta-imagen img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tarjeta-imagen.sin-imagen::after {
+  content: "Foto pendiente";
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #9390a8; font-size: 0.85rem;
+}
+.tarjeta-cuerpo { padding: 0.85rem 1rem 1.05rem; }
+.tarjeta-cuerpo h3 { margin: 0 0 0.35rem; font-size: 1rem; font-weight: 600; }
+.tarjeta-descripcion {
+  margin: 0 0 0.6rem;
+  font-size: 0.82rem;
+  color: #6b6980;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.estado {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+}
+.estado-disponible { background: var(--verde-fondo); color: var(--verde); }
+.estado-reservado { background: var(--ambar-fondo); color: var(--ambar); }
+.estado-vendido { background: var(--rojo-fondo); color: var(--rojo); }
+
+.sin-resultados { text-align: center; color: #83809a; margin-top: 2.5rem; }
+
+.whatsapp-flotante {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--marino);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.3rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  box-shadow: 0 8px 24px rgba(42, 40, 96, 0.35);
+}
+.whatsapp-flotante svg { width: 20px; height: 20px; }
+.whatsapp-flotante:hover { background: var(--marino-oscuro); }
+
+@media (max-width: 640px) {
+  .topbar { padding: 1rem 1.25rem; }
+  .topnav { gap: 1.1rem; font-size: 0.88rem; }
+  .hero { padding: 2.5rem 1.25rem; }
+  .catalogo { padding: 2rem 1.25rem 6rem; }
+  .whatsapp-flotante span { display: none; }
+  .whatsapp-flotante { padding: 0.85rem; }
+}
