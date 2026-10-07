@@ -1,0 +1,269 @@
+---
+import "../styles/solicitud.css";
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Solicitud | PixelPyme</title>
+</head>
+
+
+
+
+      <!-- =========================
+           CREAR SOLICITUD
+      ========================= -->
+
+      <section class="seccion solicitud-seccion">
+
+        <h2>
+          📩 Crear una solicitud
+        </h2>
+
+      <a href="/usuario" class="boton-volver">
+       🏠 Volver al Inicio
+     </a>
+
+        <p class="descripcion-solicitud">
+          ¿Necesitas información sobre algún producto?
+          Envía una solicitud y nos pondremos en contacto contigo.
+        </p>
+
+
+        <div class="solicitud-card">
+
+          <form id="formSolicitud">
+
+
+            <!-- PRODUCTO -->
+
+            <div class="campo">
+
+              <label for="producto">
+                Producto
+              </label>
+
+              <select
+                id="producto"
+                required
+              >
+
+                <option value="">
+                  Selecciona un producto
+                </option>
+
+                <option value="Sala">
+                  Sala
+                </option>
+
+                <option value="Nevera">
+                  Nevera
+                </option>
+
+                <option value="Estufa">
+                  Estufa
+                </option>
+
+                <option value="Cama">
+                  Cama
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            <!-- TIPO DE SOLICITUD -->
+
+            <div class="campo">
+
+              <label for="tipoSolicitud">
+                ¿tienes algun problema?
+              </label>
+
+              <select
+                id="tipoSolicitud"
+                required
+              >
+
+                <option value="">
+                  Selecciona una opción
+                </option>
+
+                <option value="Información">
+                  Tengo un problema con un producto 
+                </option>
+
+                <option value="Disponibilidad">
+                  Consultar disponibilidad
+                </option>
+
+                <option value="Reserva">
+                  Solicitar reserva
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            <!-- MENSAJE -->
+
+            <div class="campo">
+
+              <label for="mensaje">
+                Mensaje
+              </label>
+
+              <textarea
+                id="mensaje"
+                rows="5"
+                placeholder="Escribe aquí tu solicitud..."
+                required
+              ></textarea>
+
+            </div>
+
+
+
+            <!-- BOTÓN -->
+
+            <button
+              type="submit"
+              class="btn-solicitud"
+            >
+              📤 Enviar solicitud
+            </button>
+
+
+            <!-- RESULTADO -->
+
+            <p
+              id="resultadoSolicitud"
+            ></p>
+
+
+          </form>
+
+        </div>
+
+      </section>
+
+      <script>
+  const formularioSolicitud =
+    document.getElementById("formSolicitud") as HTMLFormElement;
+
+  const resultadoSolicitud =
+    document.getElementById("resultadoSolicitud") as HTMLParagraphElement;
+
+  formularioSolicitud?.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+
+    // Obtener elementos del formulario
+    const productoElement =
+      document.getElementById("producto") as HTMLSelectElement;
+
+    const tipoSolicitudElement =
+      document.getElementById("tipoSolicitud") as HTMLSelectElement;
+
+    const mensajeElement =
+      document.getElementById("mensaje") as HTMLTextAreaElement;
+
+    // Obtener valores
+    const producto = productoElement.value;
+    const tipoSolicitud = tipoSolicitudElement.value;
+    const mensaje = mensajeElement.value;
+
+    // Obtener usuario que inició sesión
+    const usuarioId = localStorage.getItem("usuario_id");
+
+    console.log("Usuario ID:", usuarioId);
+    console.log("Producto:", producto);
+    console.log("Tipo:", tipoSolicitud);
+    console.log("Mensaje:", mensaje);
+
+    // Verificar que exista usuario
+    if (!usuarioId) {
+      resultadoSolicitud.textContent =
+        "❌ No se encontró el usuario. Inicia sesión nuevamente.";
+      resultadoSolicitud.style.color = "#dc3545";
+      return;
+    }
+
+    // Relacionar el nombre del producto con su ID de la BD
+    const productos: Record<string, number> = {
+      Sala: 1,
+      Ropero: 2,
+      Nevera: 3
+    };
+
+    const productoId = productos[producto];
+
+    try {
+      // ENVIAR SOLICITUD AL BACKEND
+      const respuesta = await fetch(
+        "http://localhost:8001/api/solicitudes",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            usuario_id: Number(usuarioId),
+            producto_id: productoId ?? null,
+            asunto: tipoSolicitud,
+            descripcion: mensaje
+          })
+        }
+      );
+
+      const datos = await respuesta.json();
+
+      console.log("Respuesta del servidor:", datos);
+
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.mensaje || "No se pudo crear la solicitud"
+        );
+      }
+
+      // Solicitud creada correctamente
+      resultadoSolicitud.textContent =
+        "✅ Solicitud creada correctamente.";
+
+      resultadoSolicitud.style.color = "#198754";
+
+      // Limpiar formulario
+      formularioSolicitud.reset();
+
+    } catch (error) {
+
+      console.error(
+        "Error al crear solicitud:",
+        error
+      );
+
+      resultadoSolicitud.textContent =
+        "❌ No se pudo crear la solicitud.";
+
+      resultadoSolicitud.style.color = "#dc3545";
+    }
+  });
+</script>
+ 
+ 
+</html>
+
+
+
+  
+
+

@@ -1,0 +1,199 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Inter', Arial, sans-serif;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(201, 138, 62, 0.12), transparent 45%),
+     linear-gradient(160deg, #071233 0%, #0b2e4d14 55%, #0e1f5c 100%);
+  }
+
+  .registro-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+  }
+
+  .registro-card {
+    width: 100%;
+    max-width: 480px;
+    background: #fdfcfa;
+    padding: 44px 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 60px rgba(3, 8, 30, 0.35);
+  }
+
+  .icono {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 20px;
+    background: #0b1a4d;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+  }
+
+  h1 {
+    text-align: left;
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #14172b;
+    margin-bottom: 8px;
+  }
+
+  .subtitulo {
+    text-align: left;
+    color: #6b7280;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 32px;
+  }
+
+   .campo {
+    margin-bottom: 18px;
+  }
+
+  .campo label {
+    display: block;
+    margin-bottom: 8px;
+    color: #14172b;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+
+  input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #e3e0da;
+    border-radius: 10px;
+    background: #ffffff;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 15px;
+    color: #14172b;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input::placeholder {
+    color: #a8a8a8;
+  }
+
+  input:focus {
+    border-color: #c98a3e;
+    box-shadow: 0 0 0 4px rgba(201, 138, 62, 0.14);
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #0b1a4d;
+    color: white;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  button:hover {
+    background: #142a6b;
+    transform: translateY(-1px);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  #mensaje {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .error {
+    color: #c0392b;
+  }
+
+  .exito {
+    color: #2f7d4f;
+  }
+
+  .login-text {
+    text-align: center;
+    margin-top: 24px;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .login-text a {
+    color: #0b1a4d;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .login-text a:hover {
+    text-decoration: underline;
+  }
+
+  .password-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .password-container input {
+    padding-right: 46px;
+  }
+
+  .ojo {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: transparent;
+    color: #6b7280;
+    border: none;
+    font-size: 17px;
+    cursor: pointer;
+  }
+
+  .ojo:hover {
+    background: transparent;
+    transform: translateY(-50%);
+  }
+
+  .ojo:active {
+    transform: translateY(-50%);
+  }
+
+  @media (max-width: 500px) {
+    .registro-card {
+      padding: 32px 26px;
+    }
+
+    h1 {
+      font-size: 26px;
+    }
+  }

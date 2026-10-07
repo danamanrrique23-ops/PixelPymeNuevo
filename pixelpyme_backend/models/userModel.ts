@@ -5,7 +5,7 @@ export interface Usuario {
   nombres: string;
   apellidos: string;
   email: string;
- password : string;
+  password: string;
   rol: string;
 }
 
@@ -26,17 +26,7 @@ export async function registrarUsuario(
   email: string,
   password: string
 ) {
-  console.log("1. Entró a registrarUsuario");
-
-  const datos = [
-    nombres,
-    apellidos,
-    email,
-    password,
-    "usuario"
-  ];
-
-  console.log("2. Datos para INSERT:", datos);
+  const datos = [nombres, apellidos, email, password, "Usuario"];
 
   const resultado = await client.query(
     `INSERT INTO usuarios
@@ -44,8 +34,6 @@ export async function registrarUsuario(
     VALUES (?, ?, ?, ?, ?)`,
     datos
   );
-
-  console.log("3. INSERT terminado:", resultado);
 
   return resultado;
 }
@@ -60,14 +48,71 @@ export async function registrarUsuarioGoogle(
     `INSERT INTO usuarios
     (nombres, apellidos, email, password, rol)
     VALUES (?, ?, ?, ?, ?)`,
-    [
-      nombres,
-      apellidos,
-      email,
-      "",
-      "usuario"
-    ]
+    [nombres, apellidos, email, "", "Usuario"]
   );
 
   return resultado;
 }
+// Lista los clientes, sin la contraseña
+export const listarClientes = async () => {
+  const resultado = await client.query(
+    `SELECT id_usuario, nombres, apellidos, email
+     FROM usuarios
+     WHERE rol = 'Usuario'
+     ORDER BY id_usuario DESC`
+  );
+  return resultado;
+};
+
+// Crea un cliente (el rol siempre queda fijo como 'Usuario')
+export const crearCliente = async (
+  nombres: string,
+  apellidos: string,
+  email: string,
+  passwordHash: string,
+) => {
+  return await client.execute(
+    `INSERT INTO usuarios (nombres, apellidos, email, password, rol)
+     VALUES (?, ?, ?, ?, 'Usuario')`,
+    [nombres, apellidos, email, passwordHash],
+  );
+};
+
+// Actualiza un cliente; si no llega contraseña nueva, no se toca la actual
+export const actualizarCliente = async (
+  id: number,
+  nombres: string,
+  apellidos: string,
+  email: string,
+  passwordHash?: string,
+) => {
+  if (passwordHash) {
+    return await client.execute(
+      `UPDATE usuarios SET nombres = ?, apellidos = ?, email = ?, password = ?
+       WHERE id_usuario = ? AND rol = 'Usuario'`,
+      [nombres, apellidos, email, passwordHash, id],
+    );
+  }
+  return await client.execute(
+    `UPDATE usuarios SET nombres = ?, apellidos = ?, email = ?
+     WHERE id_usuario = ? AND rol = 'Usuario'`,
+    [nombres, apellidos, email, id],
+  );
+};
+
+// Cuenta solo los usuarios con rol 'Usuario' (los administradores no son clientes)
+export const contarClientes = async () => {
+  const resultado = await client.query(
+    "SELECT COUNT(*) AS total FROM usuarios WHERE rol = 'Usuario'"
+  );
+  // Number() por si el driver devuelve el conteo como BigInt
+  return Number(resultado[0].total);
+};
+
+// Elimina un cliente (el AND rol evita borrar administradores por error)
+export const eliminarCliente = async (id: number) => {
+  return await client.execute(
+    `DELETE FROM usuarios WHERE id_usuario = ? AND rol = 'Usuario'`,
+    [id],
+  );
+};

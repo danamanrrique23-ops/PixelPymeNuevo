@@ -1,5 +1,5 @@
 ---
-
+import "../styles/registro.css";
 ---
 
 <html lang="es">
@@ -122,6 +122,9 @@
     <a href="/inicioSeccion">Inicia sesión</a>
   </p>
 
+  <a href="/" class="boton-catalogo">
+  🛋️ Volver al Catálogo
+</a>
 </div>
 
 
@@ -313,196 +316,7 @@
 
   });
 </script>
-  <style>
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-  min-height: 100vh;
-      background: linear-gradient(135deg, #021670, #052170, #132556);
-
-}
-
-    .registro-container {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-    }
-
-    .registro-card {
-      width: 200%;
-      max-width: 650px;
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-    }
-
-    .icono {
-      width: 65px;
-      height: 65px;
-      margin: 0 auto 15px;
-      background: #e8f1ff;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 30px;
-    }
-
-    h1 {
-      text-align: center;
-       font-size: 34px;
-    color: #000000;
-    margin-bottom: 30px;
-    font-weight: 900;
-    
-    }
-
-    .subtitulo {
-      text-align: center;
-      color: #6b7280;
-      margin-bottom: 30px;
-      font-size: 14px;
-    }
-
-    .campo {
-      
-        margin-bottom: 8px;
-        color: #0b0a0a;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    
-    input {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      font-size: 15px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #4f8cff;
-      box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.12);
-    }
-
   
-
-         
-       button {
-        width: 100%;
-        padding: 14px;
-
-        border: none;
-        border-radius: 10px;
-
-        background: linear-gradient(#021670);
-
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
-    }
-
-    button:active {
-        transform: translateY(0);
-    }
-      
-   
-    
-
-    button:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    #mensaje {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .error {
-      color: #dc2626;
-    }
-
-    .exito {
-      color: #16a34a;
-    }
-
-    .login-text {
-      text-align: center;
-      margin-top: 25px;
-      color: #6b7280;
-      font-size: 14px;
-    }
-
-    .login-text a {
-      color: #032c76;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .login-text a:hover {
-      text-decoration: underline;
-
-    }
-
-
-    .password-container {
-  position: relative;
-  width: 100%;
-}
-
-.password-container input {
-  padding-right: 50px;
-}
-
-.ojo {
-  position: absolute;
-  right: 10px;
-  top: 45%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  color: #333;
-  border: none;
-  box-shadow: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.ojo:hover {
-  transform: translateY(-50%);
-  background: transparent;
-  box-shadow: none;
-}
-
-.ojo:active {
-  transform: translateY(-50%);
-}
-
-  </style>
 
 </body>
 </html>

@@ -1,0 +1,302 @@
+
+
+    *.solicitud-seccion {
+
+      margin-top: 40px;
+
+      margin-bottom: 40px;
+
+    }
+
+
+
+    .descripcion-solicitud {
+
+      color: #737d91;
+
+      margin-bottom: 20px;
+
+      line-height: 1.5;
+
+    }
+
+
+
+    .solicitud-card {
+
+      background: white;
+
+      padding: 30px;
+
+      border-radius: 16px;
+
+      border:
+        1px solid
+        #e5e9f2;
+
+      box-shadow:
+        0 5px 20px
+        rgba(
+          2,
+          22,
+          112,
+          0.08
+        );
+
+      max-width: 800px;
+
+    }
+
+
+
+    .campo {
+
+      margin-bottom: 20px;
+
+    }
+
+
+
+    .campo label {
+
+      display: block;
+
+      margin-bottom: 8px;
+
+      color: #021670;
+
+      font-weight: bold;
+
+    }
+
+
+
+    .campo select,
+    .campo textarea {
+
+      width: 100%;
+
+      padding: 13px;
+
+      border:
+        1px solid
+        #dce1eb;
+
+      border-radius: 10px;
+
+      font-size: 15px;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      outline: none;
+
+      background: white;
+
+    }
+
+
+
+    .campo select:focus,
+    .campo textarea:focus {
+
+      border-color: #021670;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(
+          2,
+          22,
+          112,
+          0.08
+        );
+
+    }
+
+
+
+    .campo textarea {
+
+      resize: vertical;
+
+    }
+
+
+
+    .btn-solicitud {
+
+      width: 100%;
+
+      padding: 14px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #021670;
+
+      color: white;
+
+      font-size: 15px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      transition: 0.3s;
+
+    }
+
+
+
+    .btn-solicitud:hover {
+
+      background: #0632b8;
+
+      transform:
+        translateY(-2px);
+
+    }
+
+
+
+    #resultadoSolicitud {
+
+      text-align: center;
+
+      margin-top: 15px;
+
+      font-weight: bold;
+
+    }
+
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+
+      .sidebar {
+
+        width: 210px;
+
+      }
+
+
+      .contenido {
+
+        padding: 25px;
+
+      }
+
+
+      .tarjetas {
+
+        grid-template-columns: 1fr;
+
+      }
+
+
+      .icono-bienvenida {
+
+        display: none;
+
+      }
+
+    }
+
+
+
+    @media (max-width: 650px) {
+
+      .contenedor {
+
+        flex-direction: column;
+
+      }
+
+
+      .sidebar {
+
+        width: 100%;
+
+        min-height: auto;
+
+      }
+
+
+      nav {
+
+        flex-direction: row;
+
+        flex-wrap: wrap;
+
+      }
+
+
+      .cerrar-sesion {
+
+        margin-top: 20px;
+
+      }
+
+
+      .topbar {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 20px;
+
+      }
+
+
+      .bienvenida {
+
+        padding: 25px;
+
+      }
+
+
+      .bienvenida h1 {
+
+        font-size: 28px;
+
+      }
+
+
+      .solicitud-card {
+
+        padding: 20px;
+
+      }
+
+    }
+
+
+    .boton-volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  background: #0b30ac;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.3s;
+  border: 1px solid #4d6fe3;
+}
+
+.boton-volver:hover {
+  background: #456be0;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+

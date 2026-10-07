@@ -1,0 +1,67 @@
+---
+import "../../styles/index.css";
+import { productos } from "../../data/productos";
+
+export function getStaticPaths() {
+  return productos.map((p) => ({
+    params: { id: String(p.id_producto) },
+    props: { p },
+  }));
+}
+
+const { p } = Astro.props;
+const numeroWhatsapp = "573148008013";
+const lista = p.caracteristicas.split(",").map((c) => c.trim()).filter(Boolean);
+const mensaje = encodeURIComponent(`Hola, quiero información sobre: ${p.nombre}`);
+---
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{p.nombre} — Triunfo Mer</title>
+</head>
+<body>
+  <main class="detalle">
+    <a href="/#catalogo" class="btn-volver-detalle">← Volver al catálogo</a>
+
+    <div class="detalle-grid">
+      <div class="galeria">
+        <img id="foto-principal" src={p.imagenes[0]} alt={p.nombre} />
+        <div class="miniaturas">
+          {p.imagenes.map((src, i) => (
+            <img src={src} alt={`${p.nombre} ${i + 1}`} class="mini" />
+          ))}
+        </div>
+      </div>
+
+      <div class="info">
+        <h1>{p.nombre}</h1>
+        <span class={`estado estado-${p.estado}`}>{p.estado}</span>
+        <p>{p.descripcion}</p>
+
+        <dl>
+          <dt>Marca</dt><dd>{p.marca}</dd>
+          <dt>Categoría</dt><dd>{p.nombre_categoria}</dd>
+          <dt>Unidades</dt><dd>{p.cantidad}</dd>
+        </dl>
+
+        <h3>Características</h3>
+        <ul>{lista.map((c) => <li>{c}</li>)}</ul>
+
+        <a class="btn-comprar" target="_blank" rel="noopener noreferrer"
+           href={`https://wa.me/${numeroWhatsapp}?text=${mensaje}`}>
+          Quiero comprarlo
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const principal = document.getElementById("foto-principal") as HTMLImageElement;
+    document.querySelectorAll<HTMLImageElement>(".mini").forEach((m) => {
+      m.addEventListener("click", () => (principal.src = m.src));
+    });
+  </script>
+</body>
+</html>

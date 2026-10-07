@@ -1,0 +1,146 @@
+---
+import "../styles/Administrador.css";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Administrador — PixelPyme</title>
+  </head>
+
+  <body>
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="marca">
+          <span class="marca-icono">🔧</span>
+          <span class="marca-nombre">PixelPyme</span>
+        </div>
+
+        <nav class="nav">
+          <a href="/Administrador" class="nav-link activo">
+            <span class="nav-icono">▦</span>
+            Panel
+          </a>
+          <a href="/AdministradorUsuarios" class="nav-link">
+            <span class="nav-icono">◔</span>
+            Clientes
+          </a>
+          <a href="/Administrador/productos" class="nav-link">
+            <span class="nav-icono">▤</span>
+            Productos
+          </a>
+          <a href="/Administrador/cuotas" class="nav-link">
+            <span class="nav-icono">◈</span>
+            Cuotas
+          </a>
+          <a href="/Administrador/categorias" class="nav-link">
+            <span class="nav-icono">▥</span>
+            Categorías
+          </a>
+        </nav>
+
+        <button id="cerrarSesion" class="cerrar-sesion">
+          Cerrar sesión
+        </button>
+      </aside>
+
+      <!-- CONTENIDO -->
+      <main class="contenido">
+        <header class="encabezado">
+          <div>
+            <p class="saludo">Bienvenido de nuevo</p>
+            <h1 id="nombreAdmin">Administrador</h1>
+          </div>
+        </header>
+
+        <!-- TARJETAS RESUMEN -->
+        <section class="resumen">
+          <div class="tarjeta">
+            <p class="tarjeta-etiqueta">Clientes activos</p>
+            <p class="tarjeta-valor" id="clientesActivos">0</p>
+          </div>
+
+          <div class="tarjeta">
+            <p class="tarjeta-etiqueta">Productos disponibles</p>
+            <p class="tarjeta-valor">0</p>
+          </div>
+
+          <div class="tarjeta">
+            <p class="tarjeta-etiqueta">Cuotas pendientes</p>
+            <p class="tarjeta-valor">0</p>
+          </div>
+
+          <div class="tarjeta tarjeta-alerta">
+            <p class="tarjeta-etiqueta">Comprobantes por verificar</p>
+            <p class="tarjeta-valor">0</p>
+          </div>
+        </section>
+
+        <!-- ACTIVIDAD RECIENTE -->
+        <section class="panel-lista">
+          <div class="panel-lista-encabezado">
+            <h2>Comprobantes por verificar</h2>
+            <a href="/Administrador/cuotas" class="ver-todo">Ver todo</a>
+          </div>
+
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Producto</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoTablaCuotas">
+              <tr>
+                <td colspan="5" class="tabla-vacia">
+                  Aún no hay comprobantes registrados
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const nombreGuardado = localStorage.getItem("usuario_nombre");
+      const nombreAdmin = document.getElementById("nombreAdmin") as HTMLHeadingElement;
+
+      if (nombreGuardado && nombreAdmin) {
+        nombreAdmin.textContent = nombreGuardado;
+      }
+
+      const botonCerrarSesion =
+        document.getElementById("cerrarSesion") as HTMLButtonElement;
+
+      botonCerrarSesion.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("usuario_id");
+        localStorage.removeItem("usuario_nombre");
+        window.location.href = "/inicioSeccion";
+      });
+
+    // Pedimos al backend cuántos clientes hay registrados
+async function cargarClientes() {
+  try {
+    const respuesta = await fetch("http://127.0.0.1:8001/clientes/total");
+    // Convertimos la respuesta a objeto JS: { total: 1 }
+    const datos = await respuesta.json();
+    // Reemplazamos el 0 por el valor real
+    const elemento = document.getElementById("clientesActivos");
+    if (elemento) elemento.textContent = String(datos.total);
+  } catch (error) {
+    // Si falla, lo vemos en la consola del navegador (F12)
+    console.error("Error al cargar clientes:", error);
+  }
+}
+
+cargarClientes();
+    </script>
+  </body>
+</html>

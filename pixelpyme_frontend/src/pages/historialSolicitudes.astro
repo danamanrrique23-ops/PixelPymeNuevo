@@ -1,0 +1,537 @@
+---
+ import "../styles/usuario.css";
+ ---
+
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Mis solicitudes | PixelPyme</title>
+</head>
+
+<body>
+
+  <div class="contenedor">
+
+```
+<!-- BARRA LATERAL -->
+<aside class="sidebar">
+
+  <div class="logo">
+    <h1>Pixel<span>Pyme</span></h1>
+  </div>
+
+  <nav>
+
+    <a href="/usuario">
+      🏠 Volver al Inicio
+    </a>
+
+    <a href="/">
+      🛋️ Catálogo
+    </a>
+
+    <a href="/buscar">
+      🔍 Buscar productos
+    </a>
+
+    <a href="/solicitud">
+      📩 Crear solicitud
+    </a>
+
+    <a href="/perfil">
+      👤 Mi perfil
+    </a>
+
+  </nav>
+
+  <button
+    id="cerrarSesion"
+    class="cerrar-sesion"
+  >
+    🚪 Cerrar sesión
+  </button>
+
+</aside>
+
+
+<!-- CONTENIDO -->
+<main class="contenido">
+
+  <header class="topbar">
+
+    <div>
+      <h2>Mis solicitudes</h2>
+
+      <p>
+        Consulta las solicitudes que has realizado
+      </p>
+    </div>
+
+
+    <div class="usuario">
+
+      <div class="avatar">
+        👤
+      </div>
+
+      <div>
+
+        <strong id="nombreUsuario">
+          Usuario
+        </strong>
+
+        <small>
+          Cliente
+        </small>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- ENCABEZADO -->
+  <section class="bienvenida">
+
+    <div>
+
+      <p class="pequeno">
+        MIS SOLICITUDES
+      </p>
+
+      <h1>
+        Solicitudes realizadas 📋
+      </h1>
+
+      <p>
+        Aquí puedes consultar las solicitudes que
+        has enviado y conocer su estado.
+      </p>
+
+    </div>
+
+
+    <div class="icono-bienvenida">
+      📋
+    </div>
+
+  </section>
+
+
+  <!-- LISTA DE SOLICITUDES -->
+  <section class="seccion">
+
+    <div class="encabezado-solicitudes">
+
+      <div>
+
+        <h2>
+          Historial de solicitudes
+        </h2>
+
+        <p>
+          Estas son las solicitudes que has realizado
+          desde PixelPyme.
+        </p>
+
+      </div>
+
+
+      <a
+        href="/solicitud"
+        class="boton-nueva-solicitud"
+      >
+        📩 Nueva solicitud
+      </a>
+
+    </div>
+
+
+    <!-- AQUÍ APARECERÁN LAS SOLICITUDES -->
+    <div
+      id="listaSolicitudes"
+      class="lista-solicitudes"
+    >
+
+      <p class="cargando">
+        Cargando solicitudes...
+      </p>
+
+    </div>
+
+  </section>
+
+</main>
+```
+
+  </div>
+
+  <script>
+
+    // =====================================
+    // MOSTRAR NOMBRE DEL USUARIO
+    // =====================================
+
+    const nombreGuardado =
+      localStorage.getItem("usuario_nombre");
+
+    const nombreUsuario =
+      document.getElementById("nombreUsuario");
+
+    if (nombreGuardado && nombreUsuario) {
+
+      nombreUsuario.textContent =
+        nombreGuardado;
+
+    }
+
+
+    // =====================================
+    // OBTENER ID DEL USUARIO
+    // =====================================
+
+    const usuarioId =
+      localStorage.getItem("usuario_id");
+
+
+    const listaSolicitudes =
+      document.getElementById(
+        "listaSolicitudes"
+      );
+
+
+    // =====================================
+    // CONSULTAR SOLICITUDES
+    // =====================================
+
+    async function cargarSolicitudes() {
+
+      if (!usuarioId) {
+
+        if (listaSolicitudes) {
+
+          listaSolicitudes.innerHTML = `
+
+            <div class="mensaje-vacio">
+
+              <h3>
+                ⚠️ Sesión no encontrada
+              </h3>
+
+              <p>
+                Debes iniciar sesión nuevamente
+                para consultar tus solicitudes.
+              </p>
+
+              <a
+                href="/"
+                class="boton-nueva-solicitud"
+              >
+                Iniciar sesión
+              </a>
+
+            </div>
+
+          `;
+
+        }
+
+        return;
+
+      }
+
+
+      try {
+
+        const respuesta = await fetch(
+          `http://localhost:8001/api/solicitudes/usuario/${usuarioId}`
+        );
+
+
+        const solicitudes =
+          await respuesta.json();
+
+
+        if (!respuesta.ok) {
+
+          throw new Error(
+            solicitudes.mensaje ||
+            "No se pudieron obtener las solicitudes."
+          );
+
+        }
+
+
+        // =====================================
+        // NO HAY SOLICITUDES
+        // =====================================
+
+        if (
+          !Array.isArray(solicitudes) ||
+          solicitudes.length === 0
+        ) {
+
+          if (listaSolicitudes) {
+
+            listaSolicitudes.innerHTML = `
+
+              <div class="mensaje-vacio">
+
+                <div class="icono-vacio">
+                  📭
+                </div>
+
+                <h3>
+                  No tienes solicitudes todavía
+                </h3>
+
+                <p>
+                  Cuando realices una solicitud,
+                  aparecerá aquí.
+                </p>
+
+                <a
+                  href="/solicitud"
+                  class="boton-nueva-solicitud"
+                >
+                  📩 Crear solicitud
+                </a>
+
+              </div>
+
+            `;
+
+          }
+
+          return;
+
+        }
+
+
+        // =====================================
+        // MOSTRAR SOLICITUDES
+        // =====================================
+
+        if (listaSolicitudes) {
+
+          listaSolicitudes.innerHTML =
+            solicitudes
+              .map((solicitud: any) => {
+
+                const fecha =
+                  solicitud.fecha
+                    ? new Date(
+                        solicitud.fecha
+                      ).toLocaleDateString(
+                        "es-CO",
+                        {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric"
+                        }
+                      )
+                    : "Sin fecha";
+
+
+                const estado =
+                  solicitud.estado ||
+                  "Pendiente";
+
+
+                const producto =
+                  solicitud.id_producto
+                    ? `Producto #${solicitud.id_producto}`
+                    : "No especificado";
+
+
+                return `
+
+                  <article class="solicitud-item">
+
+                    <div class="solicitud-cabecera">
+
+                      <div>
+
+                        <span class="numero-solicitud">
+                          Solicitud #${solicitud.id_solicitud}
+                        </span>
+
+                        <h3>
+                          ${solicitud.asunto}
+                        </h3>
+
+                      </div>
+
+
+                      <span class="estado-solicitud">
+                        ${estado}
+                      </span>
+
+                    </div>
+
+
+                    <div class="solicitud-datos">
+
+                      <div>
+
+                        <strong>
+                          📅 Fecha
+                        </strong>
+
+                        <span>
+                          ${fecha}
+                        </span>
+
+                      </div>
+
+
+                      <div>
+
+                        <strong>
+                          🛋️ Producto
+                        </strong>
+
+                        <span>
+                          ${producto}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="solicitud-descripcion">
+
+                      <strong>
+                        💬 Descripción
+                      </strong>
+
+                      <p>
+                        ${solicitud.descripcion}
+                      </p>
+
+                    </div>
+
+                  </article>
+
+                `;
+
+              })
+              .join("");
+
+        }
+
+
+      } catch (error) {
+
+        console.error(
+          "Error al cargar solicitudes:",
+          error
+        );
+
+
+        if (listaSolicitudes) {
+
+          listaSolicitudes.innerHTML = `
+
+            <div class="mensaje-vacio">
+
+              <div class="icono-vacio">
+                ❌
+              </div>
+
+              <h3>
+                No se pudieron cargar las solicitudes
+              </h3>
+
+              <p>
+                Ocurrió un error al consultar
+                tus solicitudes.
+              </p>
+
+            </div>
+
+          `;
+
+        }
+
+      }
+
+    }
+
+
+    // =====================================
+    // CARGAR SOLICITUDES
+    // =====================================
+
+    cargarSolicitudes();
+
+
+    // =====================================
+    // CERRAR SESIÓN
+    // =====================================
+
+    const cerrarSesion =
+      document.getElementById(
+        "cerrarSesion"
+      );
+
+
+    cerrarSesion?.addEventListener(
+      "click",
+      () => {
+
+        const confirmar =
+          confirm(
+            "¿Estás segura de que quieres cerrar sesión?"
+          );
+
+
+        if (!confirmar) {
+          return;
+        }
+
+
+        localStorage.removeItem(
+          "usuario_nombre"
+        );
+
+        localStorage.removeItem(
+          "usuario_apellido"
+        );
+
+        localStorage.removeItem(
+          "usuario_email"
+        );
+
+        localStorage.removeItem(
+          "usuario_id"
+        );
+
+        localStorage.removeItem(
+          "token"
+        );
+
+        localStorage.removeItem(
+          "rol"
+        );
+
+
+        window.location.href = "/";
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>

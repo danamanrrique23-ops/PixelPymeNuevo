@@ -1,0 +1,314 @@
+---
+
+import "../styles/login.css";
+---
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recuperar contraseña - PixelPyme</title>
+  </head>
+
+  <body>
+    <main class="login-container">
+      <div class="login-card">
+
+
+    <!-- PASO 1 -->
+    <section id="paso1">
+      <div class="icon">🔐</div>
+
+      <h1>Recuperar contraseña</h1>
+
+      <p class="subtitle">
+        Ingresa tu correo electrónico para recibir un código de recuperación.
+      </p>
+
+      <form id="formCorreo">
+
+        <div class="input-group">
+          <label for="email">Correo electrónico</label>
+
+          <input
+            type="email"
+            id="email"
+            placeholder="Ingresa tu correo"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <button type="submit">
+          Enviar código
+        </button>
+
+      </form>
+
+      <div class="registro-link">
+        <a href="/inicioSeccion">
+          ← Volver al inicio de sesión
+        </a>
+      </div>
+
+      <p id="mensajeCorreo"></p>
+    </section>
+
+
+    <!-- PASO 2 -->
+    <section id="paso2" style="display: none;">
+      <div class="icon">📩</div>
+
+      <h1>Verificar código</h1>
+
+      <p class="subtitle">
+        Hemos enviado un código de 6 dígitos a tu correo electrónico.
+      </p>
+
+      <form id="formCodigo">
+
+        <div class="input-group">
+          <label for="codigo">Código de recuperación</label>
+
+          <input
+            type="text"
+            id="codigo"
+            placeholder="Ingresa el código"
+            maxlength="6"
+            inputmode="numeric"
+            required
+          />
+        </div>
+
+        <button type="submit">
+          Verificar código
+        </button>
+
+      </form>
+
+      <div class="registro-link">
+        <a href="#" id="volverCorreo">
+          ← Cambiar correo
+        </a>
+      </div>
+
+      <p id="mensajeCodigo"></p>
+    </section>
+
+
+    <!-- PASO 3 -->
+    <section id="paso3" style="display: none;">
+      <div class="icon">🔑</div>
+
+      <h1>Nueva contraseña</h1>
+
+      <p class="subtitle">
+        Crea una nueva contraseña para tu cuenta de PixelPyme.
+      </p>
+
+      <form id="formPassword">
+
+        <div class="input-group">
+          <label for="nuevaPassword">Nueva contraseña</label>
+
+          <input
+            type="password"
+            id="nuevaPassword"
+            placeholder="Ingresa tu nueva contraseña"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="confirmarPassword">
+            Confirmar contraseña
+          </label>
+
+          <input
+            type="password"
+            id="confirmarPassword"
+            placeholder="Repite tu nueva contraseña"
+            required
+          />
+        </div>
+
+        <button type="submit">
+          Cambiar contraseña
+        </button>
+
+      </form>
+
+      <p id="mensajePassword"></p>
+    </section>
+
+
+    <!-- PASO 4 -->
+    <section id="paso4" style="display: none;">
+      <div class="icon">✅</div>
+
+      <h1>¡Contraseña actualizada!</h1>
+
+      <p class="subtitle">
+        Tu contraseña se cambió correctamente.
+      </p>
+
+      <button
+        type="button"
+        onclick="window.location.href='/inicioSeccion'"
+      >
+        Iniciar sesión
+      </button>
+    </section>
+
+  </div>
+</main>
+
+
+<script>
+  const paso1 = document.getElementById("paso1") as HTMLElement;
+  const paso2 = document.getElementById("paso2") as HTMLElement;
+  const paso3 = document.getElementById("paso3") as HTMLElement;
+  const paso4 = document.getElementById("paso4") as HTMLElement;
+
+  const formCorreo = document.getElementById("formCorreo") as HTMLFormElement;
+  const formCodigo = document.getElementById("formCodigo") as HTMLFormElement;
+  const formPassword = document.getElementById("formPassword") as HTMLFormElement;
+
+  const emailInput = document.getElementById("email") as HTMLInputElement;
+  const codigoInput = document.getElementById("codigo") as HTMLInputElement;
+
+  const nuevaPassword =
+    document.getElementById("nuevaPassword") as HTMLInputElement;
+
+  const confirmarPassword =
+    document.getElementById("confirmarPassword") as HTMLInputElement;
+
+  const mensajeCorreo =
+    document.getElementById("mensajeCorreo") as HTMLParagraphElement;
+
+  const mensajeCodigo =
+    document.getElementById("mensajeCodigo") as HTMLParagraphElement;
+
+  const mensajePassword =
+    document.getElementById("mensajePassword") as HTMLParagraphElement;
+
+  let correoUsuario = "";
+
+// PASO 1: ingresar correo y solicitar código al backend
+formCorreo?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  correoUsuario = emailInput.value.trim();
+
+  if (!correoUsuario) {
+    mensajeCorreo.textContent =
+      "Ingresa tu correo electrónico.";
+    return;
+  }
+
+  mensajeCorreo.textContent = "Verificando correo...";
+
+  try {
+    const respuesta = await fetch(
+      "http://127.0.0.1:8001/api/recuperar",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: correoUsuario
+        })
+      }
+    );
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      mensajeCorreo.textContent =
+        datos.mensaje || "No se pudo procesar la solicitud.";
+      return;
+    }
+
+    console.log("Respuesta del backend:", datos);
+
+    mensajeCorreo.textContent = "";
+
+    paso1.style.display = "none";
+    paso2.style.display = "block";
+
+  } catch (error) {
+    console.error("Error conectando con el backend:", error);
+
+    mensajeCorreo.textContent =
+      "No se pudo conectar con el servidor.";
+  }
+});
+  // PASO 2: verificar código
+  formCodigo?.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const codigo = codigoInput.value.trim();
+
+    if (codigo.length !== 6) {
+      mensajeCodigo.textContent =
+        "El código debe tener 6 dígitos.";
+      return;
+    }
+
+    console.log("Código ingresado:", codigo);
+    console.log("Correo:", correoUsuario);
+
+    mensajeCodigo.textContent = "";
+
+    paso2.style.display = "none";
+    paso3.style.display = "block";
+  });
+
+
+  // VOLVER AL PASO 1
+  const volverCorreo =
+    document.getElementById("volverCorreo") as HTMLAnchorElement;
+
+  volverCorreo?.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    paso2.style.display = "none";
+    paso1.style.display = "block";
+
+    mensajeCodigo.textContent = "";
+  });
+
+
+  // PASO 3: cambiar contraseña
+  formPassword?.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const passwordNueva = nuevaPassword.value;
+    const passwordConfirmada = confirmarPassword.value;
+
+    if (passwordNueva.length < 6) {
+      mensajePassword.textContent =
+        "La contraseña debe tener mínimo 6 caracteres.";
+      return;
+    }
+
+    if (passwordNueva !== passwordConfirmada) {
+      mensajePassword.textContent =
+        "Las contraseñas no coinciden.";
+      return;
+    }
+
+    console.log("Correo:", correoUsuario);
+    console.log("Nueva contraseña:", passwordNueva);
+
+    mensajePassword.textContent = "";
+
+    paso3.style.display = "none";
+    paso4.style.display = "block";
+  });
+</script>
+
+
+
+  </body>
+</html>

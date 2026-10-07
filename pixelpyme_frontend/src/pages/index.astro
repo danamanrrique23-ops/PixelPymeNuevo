@@ -1,30 +1,7 @@
 ---
-
 import "../styles/index.css";
-
-interface Producto {
-    id_producto: number;
-    nombre: string;
-    descripcion: string;
-    marca: string;
-    caracteristicas: string;
-    imagen: string;
-    cantidad: number;
-    estado: "disponible" | "reservado" | "vendido";
-    nombre_categoria: string;
-}
-
-const productos : Producto [] = [
- { id_producto: 1, nombre: "Sala", descripcion: "Sala en L , 3 sofas", marca: "Muebles JR", caracteristicas: "Tela antirrasguños , color azul oscuro", imagen: "/img/sala.jpeg", cantidad: 2, estado: "disponible", nombre_categoria: "Muebles" },
-  { id_producto: 2, nombre: "Comedor", descripcion: "Comedor de 6 puestos en cedro", marca: "Maderas del Norte", caracteristicas: "Madera de cedro, color  caramelo , tapizado de las sillas en cuerotex", imagen: "/img/comedor.jpg", cantidad: 1, estado: "disponible", nombre_categoria: "Muebles" },
-  { id_producto: 3, nombre: "Nevera", descripcion: "Nevera no frost 400L", marca: "LG", caracteristicas: "Dispensador de agua , 2 puertas, color gris , marca LG", imagen: "/img/nevera.jpg", cantidad: 1, estado: "reservado", nombre_categoria: "Electrodomésticos" },
-  { id_producto: 4, nombre: "Estufa", descripcion: "Estufa a gas 4 puestos", marca: "Haceb", caracteristicas: "Encendido eléctrico, color negra, con horno y gratinador, con vidrio templado ", imagen: "/img/estufa.jpg", cantidad: 3, estado: "disponible", nombre_categoria: "Electrodomésticos" },
-  { id_producto: 5, nombre: "Ropero", descripcion: "Ropero 3 puertas con espejo", marca: "Muebles JR", caracteristicas: "Incluye espejo, viene dividido en 3 sectores, color blanco, espejo con luces alrededor", imagen: "/img/ropero.jpg", cantidad: 0, estado: "vendido", nombre_categoria: "Muebles" },
-  { id_producto: 6, nombre: "Lavadora", descripcion: "Lavadora 18kg carga superior", marca: "Whirlpool", caracteristicas: "automatica , color gris, de 40 libras, con una garantia de 1 año ", imagen: "/img/lavadora.jpg", cantidad: 2, estado: "disponible", nombre_categoria: "Electrodomésticos" },
-  { id_producto: 7, nombre: "Licuadora", descripcion: "Licuadora de vaso de vidrio, 3 velocidades", marca: "Oster", caracteristicas: "Vaso de vidrio 1.5L", imagen: "/img/licuadora.jpg", cantidad: 5, estado: "disponible", nombre_categoria: "Utensilios de cocina" },
-  { id_producto: 8, nombre: "Sanduchera", descripcion: "Sanduchera antiadherente 2 puestos", marca: "Oster", caracteristicas: "Placas antiadherentes", imagen: "/img/sanduchera.jpg", cantidad: 4, estado: "disponible", nombre_categoria: "Utensilios de cocina" },
-  { id_producto: 9, nombre: "Olla exprés", descripcion: "Olla a presión 7 litros", marca: "Imusa", caracteristicas: "Capacidad 7L", imagen: "/img/olla-expres.jpg", cantidad: 3, estado: "disponible", nombre_categoria: "Utensilios de cocina" },
-];
+import { productos } from "../data/productos";
+import type { Producto } from "../data/productos";
 
 const numeroWhatsapp = "573148008013"; 
 
@@ -60,7 +37,7 @@ function normalizar(texto: string): string {
         </div>
         <nav class="topnav">
             <a href="/">Inicio</a>
-            <a href="/catalogo">Catálogo</a>
+            <a href="#catalogo">Catálogo</a>
             <a href="/inicioSeccion">Mi cuenta</a>
         </nav>
     </header>
@@ -98,8 +75,9 @@ function normalizar(texto: string): string {
      
         <div class="grid" id="grid-productos">
             {productos.map((p) => (
-                <article
+                <a
                     class="tarjeta"
+                    href={`/producto/${p.id_producto}`}
                     data-nombre={p.nombre.toLowerCase()}
                     data-categoria={normalizar(p.nombre_categoria).replace(/\s+/g, "")}
                 >
@@ -113,7 +91,7 @@ function normalizar(texto: string): string {
                             {etiquetaEstado[p.estado]}
                         </span>
                     </div>
-                </article>
+                </a>
             ))}
         </div>
 
@@ -131,6 +109,20 @@ function normalizar(texto: string): string {
         </svg>
         <span>Quiero comprarlo</span>
     </a>
+
+    <a id="botonVolver" href="/" class="btn-volver">
+        ← Volver al inicio
+    </a>
+
+    <script>
+        const botonVolver = document.getElementById("botonVolver");
+        const token = localStorage.getItem("token");
+
+        if (botonVolver && token) {
+            botonVolver.textContent = "← Volver a mi cuenta";
+            botonVolver.setAttribute("href", "/usuario");
+        }
+    </script>
 
     <script>
         const inputBuscar = document.getElementById("buscador-input") as HTMLInputElement;
@@ -169,5 +161,6 @@ function normalizar(texto: string): string {
             });
         });
     </script>
+
 </body>
 </html>

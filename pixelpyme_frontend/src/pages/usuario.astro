@@ -1,16 +1,382 @@
-
 ---
+import "../styles/usuario.css";
 ---
-
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Usuario</title>
-  </head>
 
-  <body>
-    <h1>Bienvenido usuario</h1>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Usuario | PixelPyme</title>
+</head>
+
+<body>
+
+  <div class="contenedor">
+
+    <!-- =========================
+         MENÚ LATERAL
+    ========================= -->
+
+    <aside class="sidebar">
+
+      <div class="logo">
+        <h1>Pixel<span>Pyme</span></h1>
+      </div>
+
+      <nav>
+
+        <a href="/usuario" class="activo">
+          🏠 Inicio
+        </a>
+
+        <a href="/">
+          🛋️ Catálogo
+        </a>
+
+        <a href="/buscar">
+          🔍 Buscar productos
+        </a>
+
+          <a href="/solicitud">
+          � Crear solicitud
+        </a>
+
+        <a href="/perfil">
+          👤 Mi perfil
+        </a>
+
+      </nav>
+
+      <button
+        id="cerrarSesion"
+        class="cerrar-sesion"
+      >
+        🚪 Cerrar sesión
+      </button>
+
+    </aside>
+
+
+    <!-- =========================
+         CONTENIDO PRINCIPAL
+    ========================= -->
+
+    <main class="contenido">
+
+
+      <!-- =========================
+           BARRA SUPERIOR
+      ========================= -->
+
+      <header class="topbar">
+
+        <div>
+
+          <h2>
+            Panel de usuario
+          </h2>
+
+          <p>
+            Bienvenido a PixelPyme
+          </p>
+
+        </div>
+
+
+        <div class="usuario">
+
+          <div class="avatar">
+            👤
+          </div>
+
+          <div>
+
+            <strong id="nombreUsuario">
+              Usuario
+            </strong>
+
+            <small>
+              Cliente
+            </small>
+
+          </div>
+
+        </div>
+
+      </header>
+
+
+
+      <!-- =========================
+           BIENVENIDA
+      ========================= -->
+
+      <section class="bienvenida">
+
+        <div>
+
+          <p class="pequeno">
+            BIENVENIDO A PIXELPYME
+          </p>
+
+          <h1>
+            Hola,
+            <span id="nombreBienvenida">
+              Usuario
+            </span>
+            👋
+          </h1>
+
+          <p>
+            Explora nuestro catálogo y encuentra
+            los muebles y electrodomésticos
+            que necesitas.
+          </p>
+
+        </div>
+
+
+        <div class="icono-bienvenida">
+          🛋️
+        </div>
+
+      </section>
+
+
+
+      <!-- =========================
+           TARJETAS
+      ========================= -->
+
+      <section class="seccion">
+
+        <h2>
+          Accede rápidamente a tus opciones
+        </h2>
+        <p>
+         Encuentra fácilmente las 
+         opciones 
+         que necesitas
+          dentro de PixelPyme.
+          </p>
+
+
+        <div class="tarjetas">
+
+
+          <!-- CATÁLOGO -->
+
+          <a
+            href="/catalogo"
+            class="tarjeta"
+          >
+
+            <div class="icono">
+              🛋️
+            </div>
+
+            <h3>
+            Mis productos favoritos
+            </h3>
+
+            <p>
+              Consulta los productos que has marcado como 
+               favoritos y accede rápidamente a ellos.
+            </p>
+
+          </a>
+
+
+
+          <!-- BUSCAR -->
+
+          <a
+            href="/buscar"
+            class="tarjeta"
+          >
+
+            <div class="icono">
+              🔍
+            </div>
+
+            <h3>
+              Historial de productos
+            </h3>
+
+            <p>
+              Encuentra rápidamente
+              el historial de los productos que has buscado.
+            </p>
+
+          </a>
+
+
+
+
+          <a
+            href="/historialSolicitudes "
+            class="tarjeta"
+          >
+
+            <div class="icono">
+              🔍
+            </div>
+
+            <h3>
+              solicitudes Realizadas
+            </h3>
+
+            <p>
+              Revisa las solicitudes que has enviado 
+              y conoce su estado.
+
+            </p>
+          
+
+          </a>
+
+
+
+
+          <!-- PERFIL -->
+
+          <a
+            href="/perfil"
+            class="tarjeta"
+          >
+
+            <div class="icono">
+              👤
+            </div>
+
+            <h3>
+            Imformacion  de mi cuenta 
+            </h3>
+
+            <p>
+              Consulta tus datos personales y la información
+               asociada a tu cuenta en PixelPyme.
+            </p>
+
+          </a>
+
+
+        </div>
+
+      </section>
+
+      </main> 
+    </div>
+
+
+
+
+
+
+
+  <script>
+
+    // =====================================
+    // MOSTRAR NOMBRE DEL USUARIO
+    // =====================================
+
+    const nombreGuardado =
+      localStorage.getItem("usuario_nombre");
+
+
+    if (nombreGuardado) {
+
+      const nombreUsuario =
+        document.getElementById("nombreUsuario");
+
+      const nombreBienvenida =
+        document.getElementById("nombreBienvenida");
+
+
+      if (nombreUsuario) {
+
+        nombreUsuario.textContent =
+          nombreGuardado;
+
+      }
+
+
+      if (nombreBienvenida) {
+
+        nombreBienvenida.textContent =
+          nombreGuardado;
+
+      }
+
+    }
+
+
+
+    // =====================================
+    // CERRAR SESIÓN
+    // =====================================
+
+    const cerrarSesion =
+      document.getElementById("cerrarSesion");
+
+
+    cerrarSesion?.addEventListener(
+      "click",
+      () => {
+
+        const confirmar =
+          confirm(
+            "¿Estás segura de que quieres cerrar sesión?"
+          );
+
+
+        if (!confirmar) {
+
+          return;
+
+        }
+
+
+        localStorage.removeItem(
+          "usuario_nombre"
+        );
+
+        localStorage.removeItem(
+          "usuario_apellido"
+        );
+
+        localStorage.removeItem(
+          "usuario_email"
+        );
+
+        localStorage.removeItem(
+          "token"
+        );
+
+        localStorage.removeItem(
+          "rol"
+        );
+
+
+        window.location.href = "/";
+
+      }
+    );
+
+
+
+
+  </script>
+
+
+
+  
+
+
+</body>
+
 </html>
-

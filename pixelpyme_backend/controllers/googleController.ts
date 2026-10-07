@@ -162,6 +162,11 @@ export async function callbackGoogle(ctx: Context) {
     }
 
     const datosUsuario = usuario[0];
+    console.log("===== USUARIO GOOGLE =====");
+console.log("ID:", datosUsuario.id_usuario);
+console.log("EMAIL:", datosUsuario.email);
+console.log("ROL:", datosUsuario.rol);
+console.log("==========================");
 
     // Crear JWT de PixelPyme
     const token = await generarToken(
@@ -173,10 +178,15 @@ export async function callbackGoogle(ctx: Context) {
     console.log("JWT PIXELPYME CREADO");
     console.log("REDIRIGIENDO AL FRONTEND...");
 
-    // Redirigir al frontend
-    ctx.response.redirect(
-      `http://localhost:4321/usuario?token=${encodeURIComponent(token)}`
-    );
+    if (datosUsuario.rol === "Administrador") {
+  ctx.response.redirect(
+    `http://localhost:4321/Administrador?token=${encodeURIComponent(token)}`
+  );
+} else {
+  ctx.response.redirect(
+    `http://localhost:4321/usuario?token=${encodeURIComponent(token)}`
+  );
+}
 
   } catch (error) {
     console.error("Error en Google Login:", error);

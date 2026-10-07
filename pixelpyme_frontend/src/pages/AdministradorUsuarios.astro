@@ -1,0 +1,338 @@
+---
+import "../styles/Administrador.css";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clientes — PixelPyme</title>
+  </head>
+
+  <body>
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="marca">
+          <span class="marca-icono">🔧</span>
+          <span class="marca-nombre">PixelPyme</span>
+        </div>
+
+        <nav class="nav">
+          <a href="/Administrador" class="nav-link">
+            <span class="nav-icono">▦</span>
+            Panel
+          </a>
+          <a href="/AdministradorUsuarios" class="nav-link activo">
+            <span class="nav-icono">◔</span>
+            Clientes
+          </a>
+          <a href="/Administrador/productos" class="nav-link">
+            <span class="nav-icono">▤</span>
+            Productos
+          </a>
+          <a href="/Administrador/cuotas" class="nav-link">
+            <span class="nav-icono">◈</span>
+            Cuotas
+          </a>
+          <a href="/Administrador/categorias" class="nav-link">
+            <span class="nav-icono">▥</span>
+            Categorías
+          </a>
+        </nav>
+
+        <button id="cerrarSesion" class="cerrar-sesion">
+          Cerrar sesión
+        </button>
+      </aside>
+
+      <!-- CONTENIDO -->
+      <main class="contenido">
+        <header class="encabezado">
+          <div>
+            <p class="saludo">Administración</p>
+            <h1>Clientes</h1>
+          </div>
+          <button id="btnNuevo" class="btn btn-primario">+ Nuevo cliente</button>
+        </header>
+
+        <section class="panel-lista">
+          <div class="barra-herramientas">
+            <input
+              type="search"
+              id="buscadorClientes"
+              class="buscador"
+              placeholder="Buscar por nombre, correo o ID..."
+            />
+            <span id="contadorClientes" class="contador"></span>
+          </div>
+
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoTablaClientes">
+              <tr><td colspan="5" class="tabla-vacia">Cargando clientes...</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <!-- MODAL para agregar / editar -->
+    <div id="modalCliente" class="modal" hidden>
+      <div class="modal-caja">
+        <h2 id="modalTitulo">Nuevo cliente</h2>
+
+        <form id="formCliente">
+          <input type="hidden" id="clienteId" />
+
+          <label>Nombres
+            <input type="text" id="campoNombres" required />
+          </label>
+          <label>Apellidos
+            <input type="text" id="campoApellidos" required />
+          </label>
+          <label>Correo
+            <input type="email" id="campoEmail" required />
+          </label>
+          <label>Contraseña
+            <input type="password" id="campoPassword" />
+          </label>
+
+          <p id="mensajeError" class="mensaje-error" hidden></p>
+
+          <div class="modal-acciones">
+            <button type="button" id="btnCancelar" class="btn">Cancelar</button>
+            <button type="submit" class="btn btn-primario">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const API = "http://127.0.0.1:8001";
+
+      interface Cliente {
+        id_usuario: number;
+        nombres: string;
+        apellidos: string;
+        email: string;
+      }
+
+      let clientes: Cliente[] = [];
+
+      const cuerpo = document.getElementById("cuerpoTablaClientes") as HTMLTableSectionElement;
+      const buscador = document.getElementById("buscadorClientes") as HTMLInputElement;
+      const contador = document.getElementById("contadorClientes") as HTMLSpanElement;
+      const modal = document.getElementById("modalCliente") as HTMLDivElement;
+      const form = document.getElementById("formCliente") as HTMLFormElement;
+      const titulo = document.getElementById("modalTitulo") as HTMLHeadingElement;
+      const campoId = document.getElementById("clienteId") as HTMLInputElement;
+      const campoNombres = document.getElementById("campoNombres") as HTMLInputElement;
+      const campoApellidos = document.getElementById("campoApellidos") as HTMLInputElement;
+      const campoEmail = document.getElementById("campoEmail") as HTMLInputElement;
+      const campoPassword = document.getElementById("campoPassword") as HTMLInputElement;
+      const mensajeError = document.getElementById("mensajeError") as HTMLParagraphElement;
+
+      // Quita tildes y pasa a minúsculas para que "José" coincida con "jose"
+      const normalizar = (t: string) =>
+        t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+      // ---------- CARGAR ----------
+      async function cargarClientes() {
+        try {
+          const respuesta = await fetch(`${API}/clientes`);
+          clientes = await respuesta.json();
+          pintar();
+        } catch (error) {
+          console.error("Error al cargar clientes:", error);
+          cuerpo.innerHTML =
+            '<tr><td colspan="5" class="tabla-vacia">No se pudieron cargar los clientes</td></tr>';
+        }
+      }
+
+      // ---------- PINTAR TABLA (aplica el filtro) ----------
+      function pintar() {
+        const texto = normalizar(buscador.value.trim());
+
+        const filtrados = clientes.filter((c) =>
+          normalizar(`${c.id_usuario} ${c.nombres} ${c.apellidos} ${c.email}`).includes(texto)
+        );
+
+        contador.textContent = `${filtrados.length} de ${clientes.length}`;
+        cuerpo.innerHTML = "";
+
+        if (filtrados.length === 0) {
+          const fila = document.createElement("tr");
+          const celda = document.createElement("td");
+          celda.colSpan = 5;
+          celda.className = "tabla-vacia";
+          celda.textContent = clientes.length === 0
+            ? "Aún no hay clientes registrados"
+            : "No se encontraron clientes con ese filtro";
+          fila.appendChild(celda);
+          cuerpo.appendChild(fila);
+          return;
+        }
+
+        filtrados.forEach((c) => {
+          const fila = document.createElement("tr");
+
+          // textContent evita que un dato se interprete como HTML
+          [c.id_usuario, c.nombres, c.apellidos, c.email].forEach((valor) => {
+            const celda = document.createElement("td");
+            celda.textContent = String(valor);
+            fila.appendChild(celda);
+          });
+
+          const celdaAcciones = document.createElement("td");
+          celdaAcciones.className = "acciones";
+
+          const btnEditar = document.createElement("button");
+          btnEditar.className = "btn btn-chico";
+          btnEditar.textContent = "Editar";
+          btnEditar.addEventListener("click", () => abrirModal(c));
+
+          const btnEliminar = document.createElement("button");
+          btnEliminar.className = "btn btn-chico btn-peligro";
+          btnEliminar.textContent = "Eliminar";
+          btnEliminar.addEventListener("click", () => eliminar(c));
+
+          celdaAcciones.append(btnEditar, btnEliminar);
+          fila.appendChild(celdaAcciones);
+          cuerpo.appendChild(fila);
+        });
+      }
+
+      // ---------- MODAL ----------
+      function abrirModal(cliente?: Cliente) {
+        form.reset();
+        mensajeError.hidden = true;
+
+        if (cliente) {
+          titulo.textContent = "Editar cliente";
+          campoId.value = String(cliente.id_usuario);
+          campoNombres.value = cliente.nombres;
+          campoApellidos.value = cliente.apellidos;
+          campoEmail.value = cliente.email;
+          campoPassword.required = false;
+          campoPassword.placeholder = "Déjala vacía para no cambiarla";
+        } else {
+          titulo.textContent = "Nuevo cliente";
+          campoId.value = "";
+          campoPassword.required = true;
+          campoPassword.placeholder = "";
+        }
+
+        modal.hidden = false;
+      }
+
+      function cerrarModal() {
+        modal.hidden = true;
+      }
+
+      // ---------- GUARDAR (crear o editar) ----------
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        mensajeError.hidden = true;
+
+        const id = campoId.value;
+        const datos: Record<string, string> = {
+          nombres: campoNombres.value,
+          apellidos: campoApellidos.value,
+          email: campoEmail.value,
+        };
+        // Al editar, la contraseña solo se envía si escribieron una nueva
+        if (campoPassword.value) datos.password = campoPassword.value;
+
+        try {
+          const respuesta = await fetch(id ? `${API}/clientes/${id}` : `${API}/clientes`, {
+            method: id ? "PUT" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos),
+          });
+
+          if (!respuesta.ok) {
+            const error = await respuesta.json();
+            mensajeError.textContent = error.mensaje ?? "No se pudo guardar";
+            mensajeError.hidden = false;
+            return;
+          }
+
+          cerrarModal();
+          await cargarClientes();
+        } catch (error) {
+          console.error("Error al guardar:", error);
+          mensajeError.textContent = "No se pudo conectar con el servidor";
+          mensajeError.hidden = false;
+        }
+      });
+
+      // ---------- ELIMINAR ----------
+      async function eliminar(cliente: Cliente) {
+        const ok = confirm(`¿Eliminar a ${cliente.nombres} ${cliente.apellidos}? Esta acción no se puede deshacer.`);
+        if (!ok) return;
+
+        try {
+          const respuesta = await fetch(`${API}/clientes/${cliente.id_usuario}`, { method: "DELETE" });
+          if (!respuesta.ok) {
+            alert("No se pudo eliminar el cliente");
+            return;
+          }
+          await cargarClientes();
+        } catch (error) {
+          console.error("Error al eliminar:", error);
+          alert("No se pudo conectar con el servidor");
+        }
+      }
+
+      // ---------- EVENTOS ----------
+      document.getElementById("btnNuevo")!.addEventListener("click", () => abrirModal());
+      document.getElementById("btnCancelar")!.addEventListener("click", cerrarModal);
+      // Cerrar al hacer clic en el fondo oscuro
+      modal.addEventListener("click", (e) => { if (e.target === modal) cerrarModal(); });
+      // El filtro se aplica mientras escribes
+      buscador.addEventListener("input", pintar);
+
+      // ---------- CERRAR SESIÓN ----------
+      document.getElementById("cerrarSesion")!.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("usuario_id");
+        localStorage.removeItem("usuario_nombre");
+        window.location.href = "/inicioSeccion";
+      });
+
+      cargarClientes();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .encabezado { display: flex; justify-content: space-between; align-items: center; }
+
+  .barra-herramientas { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .buscador { flex: 1; padding: 10px 14px; border: 1px solid #d6d6d6; border-radius: 8px; font-size: 14px; }
+  .contador { color: #6b7280; font-size: 13px; white-space: nowrap; }
+
+  .btn { padding: 8px 14px; border: 1px solid #d6d6d6; border-radius: 8px; background: #fff; cursor: pointer; }
+  .btn-primario { background: #0a1a6b; color: #fff; border-color: #0a1a6b; }
+  .btn-chico { padding: 5px 10px; font-size: 13px; }
+  .btn-peligro { color: #b91c1c; border-color: #fca5a5; }
+  .acciones { display: flex; gap: 8px; }
+
+  .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+  .modal[hidden] { display: none; }
+  .modal-caja { background: #fff; padding: 24px; border-radius: 12px; width: min(420px, 92vw); }
+  .modal-caja h2 { margin: 0 0 16px; }
+  .modal-caja label { display: block; margin-bottom: 12px; font-size: 14px; }
+  .modal-caja input { width: 100%; margin-top: 4px; padding: 9px 12px; border: 1px solid #d6d6d6; border-radius: 8px; box-sizing: border-box; }
+  .modal-acciones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+  .mensaje-error { color: #b91c1c; font-size: 13px; margin: 0; }
+</style>
